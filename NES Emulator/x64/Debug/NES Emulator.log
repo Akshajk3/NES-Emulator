@@ -1,0 +1,5 @@
+﻿  Bus.cpp
+  olc6502.cpp
+  Generating Code...
+C:\Users\aksha\Documents\NES Emulator\NES Emulator\Bus.h(14,10): error C3646: 'cpu': unknown override specifier
+C:\Users\aksha\Documents\NES Emulator\NES Emulator\Bus.h(14,2): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
