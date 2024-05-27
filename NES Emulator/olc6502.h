@@ -1,10 +1,31 @@
-#pragma once
+﻿#pragma once
 
-#include "Bus.h"
+// With little modification, reliance upon the stdlib can
+// be removed entirely if required.
 
-#include <string>
+// Ths is required for translation table and disassembler. The table
+// could be implemented straight up as an array, but I used a vector.
 #include <vector>
 
+// These are required for disassembler. If you dont require disassembly
+// then just remove the function.
+#include <string>
+#include <map>
+
+// Emulation Behaviour Logging ======================================
+// Uncomment this to create a logfile entry for each clock tick of 
+// the CPU. Beware: this slows down emulation considerably and
+// generates extremely large files. I recommend "glogg" to view the
+// data as it is designed to handle enormous files.
+//
+//#define LOGMODE // <- Uncomment me to enable logging!
+
+#ifdef LOGMODE
+#include <stdio.h>
+#endif
+
+// Forward declaration of generic communications bus class to
+// prevent circular inclusions
 class Bus;
 
 class olc6502
@@ -33,9 +54,14 @@ public:
 	uint16_t pc = 0x0000; // Program Counter
 	uint8_t status = 0x00; // Status Register
 
+	// Indicates the current instruction has completed by returning true
+	bool complete();
 
 	void ConnectBus(Bus* n) { bus = n; }
 
+	// Produces a map of strings with keys equal to instruction start locations
+	// in memory, for the specified address range
+	std::map<uint16_t, std::string> disassemble(uint16_t nStart, uint16_t nStop);
 
 	// Addressing Modes
 	uint8_t IMP();	uint8_t IMM();
@@ -68,13 +94,15 @@ public:
 	void irq();
 	void nmi();
 
-	void fetch();
+	uint8_t fetch();
 	uint8_t fetched = 0x00;
-
+	uint16_t temp = 0x0000;
 	uint16_t addr_abs = 0x0000;
 	uint16_t addr_rel = 0x00;
 	uint8_t opcode = 0x00;
 	uint8_t cycles = 0;
+	uint32_t clock_count = 0;
+
 
 private:
 	Bus* bus = nullptr;
