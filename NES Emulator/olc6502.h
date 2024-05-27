@@ -83,7 +83,7 @@ private:
 
 	// Convinience functions to set the status register
 	uint8_t GetFlag(FLAGS6502 f);
-	uint8_t SetFlag(FLAGS6502 f, bool v);
+	void SetFlag(FLAGS6502 f, bool v);
 	
 	struct INSTRUCTION
 	{
