@@ -431,6 +431,8 @@ namespace _gfs = std::experimental::filesystem::v1;
 namespace _gfs = std::filesystem;
 #endif
 
+#include <cassert>
+
 #if defined(UNICODE) || defined(_UNICODE)
 #define olcT(s) L##s
 #else

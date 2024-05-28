@@ -1,4 +1,4 @@
-﻿/*
+/*
 	olc6502 - An emulation of the 6502/2A03 processor
 	"Thanks Dad for believing computers were gonna be a big deal..." - javidx9
 
@@ -254,7 +254,7 @@ public:
 int main()
 {
 	Demo_olc6502 demo;
-	demo.Construct(680, 480, 2, 2);
+	demo.Construct(680, 480, 1, 1);
 	demo.Start();
 	return 0;
 }
