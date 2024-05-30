@@ -64,11 +64,23 @@ uint8_t olc2C02::ppuRead(uint16_t addr, bool readonly)
 {
 	uint8_t data = 0x00;
 	addr &= 0x3FFF;
+	
+	if (cart->ppuRead(addr, data))
+	{
+
+	}
+
+	return data;
 }
 
 void olc2C02::ppuWrite(uint16_t addr, uint8_t data)
 {
 	addr &= 0x3FFF;
+
+	if (cart->ppuWrite(addr, data))
+	{
+
+	}
 }
 
 void olc2C02::ConnectCartridge(const std::shared_ptr<Cartridge>& cartridge)
