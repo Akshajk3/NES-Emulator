@@ -5,6 +5,8 @@
 
 #include "Cartridge.h"
 
+#include "olcPixelGameEngine.h"
+
 class olc2C02
 {
 public:
@@ -31,4 +33,21 @@ private:
 public:
     void ConnectCartridge(const std::shared_ptr<Cartridge>& cartridge);
     void clock();
+
+private:
+    olc::Pixel palScreen[0x40];
+    olc::Sprite Screen = olc::Sprite(256, 240);
+    olc::Sprite NameTables[2] = { olc::Sprite(256, 240), olc::Sprite(256, 240) };
+    olc::Sprite PatternTables[2] = { olc::Sprite(128, 128), olc::Sprite(128, 128) };
+
+public:
+    // Debugging Utility
+    olc::Sprite& GetScreen();
+    olc::Sprite& GetNameTable(uint8_t index);
+    olc::Sprite& GetPatternTable(uint8_t index);
+    bool frame_complete = false;
+
+private:
+    int16_t scanLine = 0;
+    int16_t cycle = 0;
 };

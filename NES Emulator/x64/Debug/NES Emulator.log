@@ -1,2 +1,4 @@
-﻿  olc2C02.cpp
+﻿  Main.cpp
+C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\NES Emulator\Main.cpp(262,32): warning C4244: 'argument': conversion from 'double' to 'int32_t', possible loss of data
+C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\NES Emulator\Main.cpp(262,27): warning C4244: 'argument': conversion from 'double' to 'int32_t', possible loss of data
   NES Emulator.vcxproj -> C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\x64\Debug\NES Emulator.exe

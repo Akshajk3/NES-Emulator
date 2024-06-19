@@ -1,5 +1,7 @@
 C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\NES Emulator\Bus.cpp;C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\NES Emulator\x64\Debug\Bus.obj
 C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\NES Emulator\Cartridge.cpp;C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\NES Emulator\x64\Debug\Cartridge.obj
 C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\NES Emulator\Main.cpp;C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\NES Emulator\x64\Debug\Main.obj
+C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\NES Emulator\Mapper.cpp;C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\NES Emulator\x64\Debug\Mapper.obj
+C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\NES Emulator\Mapper_000.cpp;C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\NES Emulator\x64\Debug\Mapper_000.obj
 C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\NES Emulator\olc2C02.cpp;C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\NES Emulator\x64\Debug\olc2C02.obj
 C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\NES Emulator\olc6502.cpp;C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\NES Emulator\x64\Debug\olc6502.obj

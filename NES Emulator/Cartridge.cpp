@@ -16,6 +16,8 @@ Cartridge::Cartridge(const std::string& fileName)
 		char unused[5];
 	} header;
 
+	imageValid = false;
+
 	std::ifstream ifs;
 	ifs.open(fileName, std::ifstream::binary);
 	if (ifs.is_open())
@@ -26,6 +28,7 @@ Cartridge::Cartridge(const std::string& fileName)
 			ifs.seekg(512, std::ios_base::cur);
 
 		MapperID = ((header.mapper2 >> 4) << 4) | (header.mapper1 >> 4);
+		mirror = (header.mapper1 & 0x01) ? VERTICAL : HORIZONTAL;
 
 		uint8_t FileType = 1;
 		
@@ -36,7 +39,7 @@ Cartridge::Cartridge(const std::string& fileName)
 
 		if (FileType == 1)
 		{
-			PRGBanks == header.prg_rom_chunks;
+			PRGBanks = header.prg_rom_chunks;
 			PRGMemory.resize(PRGBanks * 16384);
 			ifs.read((char*)PRGMemory.data(), PRGMemory.size());
 
@@ -51,6 +54,14 @@ Cartridge::Cartridge(const std::string& fileName)
 
 		}
 
+		switch (MapperID)
+		{
+		case 0:
+			Mapper = std::make_shared<Mapper_000>(PRGBanks, CHRBanks);
+			break;
+		}
+
+		imageValid = true;
 		ifs.close();
 	}
 }
@@ -60,22 +71,63 @@ Cartridge::~Cartridge()
 
 }
 
+bool Cartridge::ImageValid()
+{
+	return imageValid;
+}
+
 bool Cartridge::cpuRead(uint16_t addr, uint8_t& data)
 {
-	return false;
+	uint32_t mapped_addr = 0;
+	if (Mapper->cpuMapRead(addr, mapped_addr))
+	{
+		data = PRGMemory[mapped_addr];
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 bool Cartridge::cpuWrite(uint16_t addr, uint8_t data)
 {
-	return false;
+	uint32_t mapped_addr;
+	if (Mapper->cpuMapWrite(addr, mapped_addr))
+	{
+		PRGMemory[mapped_addr] = data;
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 bool Cartridge::ppuRead(uint16_t addr, uint8_t& data)
 {
-	return false;
+	uint32_t mapped_addr;
+	if (Mapper->cpuMapWrite(addr, mapped_addr))
+	{
+		data = CHRMemory[mapped_addr];
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 bool Cartridge::ppuWrite(uint16_t addr, uint8_t data)
 {
-	return false;
+	uint32_t mapped_addr;
+	if (Mapper->cpuMapWrite(addr, mapped_addr))
+	{
+		CHRMemory[mapped_addr] = data;
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }

@@ -1,10 +1,7 @@
-#include "Bus.h"
+﻿#include "Bus.h"
 
 Bus::Bus()
 {
-	for (auto i : cpuRam)
-		i = 0x00;
-
 	cpu.ConnectBus(this);
 }
 
@@ -59,4 +56,14 @@ void Bus::reset()
 {
 	cpu.reset();
 	SystemClockCounter = 0;
+}
+
+void Bus::clock()
+{
+	ppu.clock();
+	if (SystemClockCounter % 3 == 0)
+	{
+		cpu.clock();
+	}
+	SystemClockCounter++;
 }
