@@ -17,6 +17,8 @@
 		AE0E4BE92C058015000CDE64 /* libobjc.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = AE0E4BE82C05800C000CDE64 /* libobjc.tbd */; };
 		AE0E4BEE2C0585FD000CDE64 /* olc2C02.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE0E4BEC2C0585FD000CDE64 /* olc2C02.cpp */; };
 		AE0E4BF22C058650000CDE64 /* Cartridge.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE0E4BF02C058650000CDE64 /* Cartridge.cpp */; };
+		AEC0A46F2C228C7F0034EE3A /* Mapper_000.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AEC0A46B2C228C7F0034EE3A /* Mapper_000.cpp */; };
+		AEC0A4702C228C7F0034EE3A /* Mapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AEC0A46D2C228C7F0034EE3A /* Mapper.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -58,6 +60,10 @@
 		AE0E4BF02C058650000CDE64 /* Cartridge.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Cartridge.cpp; path = ../../Cartridge.cpp; sourceTree = "<group>"; };
 		AE0E4BF42C0587A8000CDE64 /* Cartridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Cartridge.h; path = ../../Cartridge.h; sourceTree = "<group>"; };
 		AE0E4BF52C0587A8000CDE64 /* olc2C02.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = olc2C02.h; path = ../../olc2C02.h; sourceTree = "<group>"; };
+		AEC0A46B2C228C7F0034EE3A /* Mapper_000.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Mapper_000.cpp; path = ../../Mapper_000.cpp; sourceTree = "<group>"; };
+		AEC0A46C2C228C7F0034EE3A /* Mapper_000.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Mapper_000.h; path = ../../Mapper_000.h; sourceTree = "<group>"; };
+		AEC0A46D2C228C7F0034EE3A /* Mapper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Mapper.cpp; path = ../../Mapper.cpp; sourceTree = "<group>"; };
+		AEC0A46E2C228C7F0034EE3A /* Mapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Mapper.h; path = ../../Mapper.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +111,10 @@
 				AE0E4BDA2C05654D000CDE64 /* olc6502.h */,
 				AE0E4BF02C058650000CDE64 /* Cartridge.cpp */,
 				AE0E4BF42C0587A8000CDE64 /* Cartridge.h */,
+				AEC0A46B2C228C7F0034EE3A /* Mapper_000.cpp */,
+				AEC0A46C2C228C7F0034EE3A /* Mapper_000.h */,
+				AEC0A46D2C228C7F0034EE3A /* Mapper.cpp */,
+				AEC0A46E2C228C7F0034EE3A /* Mapper.h */,
 			);
 			path = NES;
 			sourceTree = "<group>";
@@ -179,10 +189,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				AE0E4BF22C058650000CDE64 /* Cartridge.cpp in Sources */,
+				AEC0A4702C228C7F0034EE3A /* Mapper.cpp in Sources */,
 				AE0E4BDD2C05654D000CDE64 /* Bus.cpp in Sources */,
 				AE0E4BEE2C0585FD000CDE64 /* olc2C02.cpp in Sources */,
 				AE0E4BDC2C05654D000CDE64 /* Main.cpp in Sources */,
 				AE0E4BDE2C05654D000CDE64 /* olc6502.cpp in Sources */,
+				AEC0A46F2C228C7F0034EE3A /* Mapper_000.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

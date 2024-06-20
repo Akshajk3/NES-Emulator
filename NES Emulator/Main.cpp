@@ -254,8 +254,6 @@ public:
 
 
 
-
-
 int main()
 {
 	Demo_olc6502 demo;

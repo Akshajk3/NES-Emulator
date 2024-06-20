@@ -86,9 +86,42 @@ olc::Sprite& olc2C02::GetNameTable(uint8_t index)
 	return NameTables[index];
 }
 
-olc::Sprite& olc2C02::GetPatternTable(uint8_t index)
+olc::Sprite& olc2C02::GetPatternTable(uint8_t index, uint8_t pallete)
 {
+    for (uint16_t TileY = 0; TileY < 16; TileY++)
+    {
+        for (uint16_t TileX = 0; TileX < 16; TileX++)
+        {
+            uint16_t Offset = TileY * 256 + TileX * 16;
+            
+            for (uint16_t row = 0; row < 8; row++)
+            {
+                uint8_t tile_lsb = ppuRead(index * 0x1000 + Offset + row + 0);
+                uint8_t tile_msb = ppuRead(index * 0x1000 + Offset + row + 8);
+                
+                for (uint16_t col = 0; col < 8; col++)
+                {
+                    uint8_t pixel = (tile_lsb & 0x01) + (tile_msb & 0x01);
+                    tile_lsb >>= 1;
+                    tile_msb >>= 1;
+                    
+                    PatternTables[index].SetPixel
+                    (
+                        TileX * 8 + (7 - col),
+                        TileY * 8 + row,
+                        GetColorFromPalleteRam(pallete, pixel)
+                    );
+                }
+            }
+        }
+    }
+    
 	return PatternTables[index];
+}
+
+olc::Pixel& olc2C02::GetColorFromPalleteRam(uint8_t pallete, uint8_t pixel)
+{
+    return palScreen[ppuRead(0x3F00 + (pallete << 2) + pixel)];
 }
 
 uint8_t olc2C02::cpuRead(uint16_t addr, bool readonly)
@@ -148,9 +181,29 @@ uint8_t olc2C02::ppuRead(uint16_t addr, bool readonly)
 	
 	if (cart->ppuRead(addr, data))
 	{
-
+        
 	}
-
+    else if (addr >= 0x0000 && addr <= 0x1FFF)
+    {
+        data = tblPattern[(addr & 0x1000) >> 12][addr & 0x0FFF];
+    }
+    else if (addr >= 0x2000 && addr <= 0x3EFF)
+    {
+        
+    }
+    else if (addr >= 0x3F00 && addr <= 0x3FFF)
+    {
+        addr &= 0x001F;
+        if (addr == 0x0010)
+            addr = 0x0000;
+        if (addr == 0x0014)
+            addr = 0x0004;
+        if (addr == 0x0018)
+            addr = 0x0008;
+        if (addr == 0x001C)
+            addr = 0x000C;
+        data = tblPalette[addr];
+    }
 	return data;
 }
 
@@ -162,6 +215,27 @@ void olc2C02::ppuWrite(uint16_t addr, uint8_t data)
 	{
 
 	}
+    else if (addr >= 0x0000 && addr <= 0x1FFF)
+    {
+        tblPattern[(addr & 0x1000) >> 12][addr & 0x0FFF] = data;
+    }
+    else if (addr >= 0x2000 && addr <= 0x3EFF)
+    {
+        
+    }
+    else if (addr >= 0x3F00 && addr <= 0x3FFF)
+    {
+        addr &= 0x001F;
+        if (addr == 0x0010)
+            addr = 0x0000;
+        if (addr == 0x0014)
+            addr = 0x0004;
+        if (addr == 0x0018)
+            addr = 0x0008;
+        if (addr == 0x001C)
+            addr = 0x000C;
+        tblPalette[addr] = data;
+    }
 }
 
 void olc2C02::ConnectCartridge(const std::shared_ptr<Cartridge>& cartridge)

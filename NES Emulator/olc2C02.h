@@ -44,7 +44,8 @@ public:
     // Debugging Utility
     olc::Sprite& GetScreen();
     olc::Sprite& GetNameTable(uint8_t index);
-    olc::Sprite& GetPatternTable(uint8_t index);
+    olc::Sprite& GetPatternTable(uint8_t index, uint8_t pallete);
+    olc::Pixel& GetColorFromPalleteRam(uint8_t pallete, uint8_t pixel);
     bool frame_complete = false;
 
 private:
