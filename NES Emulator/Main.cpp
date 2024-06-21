@@ -254,7 +254,17 @@ public:
 		DrawCode(516, 72, 26);
 
 		const int SwatchSize = 6;
-		for (int p = 0p)
+		for (int p = 0; p < 8; p++) // Each Pallete
+		{
+			for (int s = 0; s < 4; s++) // Each Index
+			{
+				FillRect(516 + p * (SwatchSize * 5) + s * SwatchSize, 340,
+					SwatchSize, SwatchSize, nes.ppu.GetColourFromPaletteRam(p , s));
+
+			}
+		}
+
+		DrawRect(516 + SelectedPallete * (SwatchSize * 5) - 1, 339, (SwatchSize * 4), SwatchSize, olc::WHITE);
 
 		DrawSprite(516, 348, &nes.ppu.GetPatternTable(0, SelectedPallete));
 		DrawSprite(648, 348, &nes.ppu.GetPatternTable(1, SelectedPallete));
