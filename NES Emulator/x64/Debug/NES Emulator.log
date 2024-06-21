@@ -1,4 +1,10 @@
 ﻿  Main.cpp
-C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\NES Emulator\Main.cpp(262,32): warning C4244: 'argument': conversion from 'double' to 'int32_t', possible loss of data
-C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\NES Emulator\Main.cpp(262,27): warning C4244: 'argument': conversion from 'double' to 'int32_t', possible loss of data
-  NES Emulator.vcxproj -> C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\x64\Debug\NES Emulator.exe
+C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\NES Emulator\Main.cpp(185,7): error C2039: 'controller': is not a member of 'Bus'
+C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\NES Emulator\Main.cpp(186,7): error C2039: 'controller': is not a member of 'Bus'
+C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\NES Emulator\Main.cpp(187,7): error C2039: 'controller': is not a member of 'Bus'
+C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\NES Emulator\Main.cpp(188,7): error C2039: 'controller': is not a member of 'Bus'
+C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\NES Emulator\Main.cpp(189,7): error C2039: 'controller': is not a member of 'Bus'
+C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\NES Emulator\Main.cpp(190,7): error C2039: 'controller': is not a member of 'Bus'
+C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\NES Emulator\Main.cpp(191,7): error C2039: 'controller': is not a member of 'Bus'
+C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\NES Emulator\Main.cpp(192,7): error C2039: 'controller': is not a member of 'Bus'
+C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\NES Emulator\Main.cpp(193,7): error C2039: 'controller': is not a member of 'Bus'
