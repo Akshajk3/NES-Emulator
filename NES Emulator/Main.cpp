@@ -94,6 +94,8 @@ public:
 	bool EmulationRun = false;
 	float ResidualTime = 0.0f;
 
+	uint8_t SelectedPallete = 0x00;
+
 	std::string hex(uint32_t n, uint8_t d)
 	{
 		std::string s(d, '0');
@@ -243,8 +245,19 @@ public:
 			EmulationRun = !EmulationRun;
 		}
 
+		if (GetKey(olc::Key::P).bPressed)
+		{
+			(++SelectedPallete) &= 0x07;
+		}
+
 		DrawCpu(516, 2);
 		DrawCode(516, 72, 26);
+
+		const int SwatchSize = 6;
+		for (int p = 0p)
+
+		DrawSprite(516, 348, &nes.ppu.GetPatternTable(0, SelectedPallete));
+		DrawSprite(648, 348, &nes.ppu.GetPatternTable(1, SelectedPallete));
 
 		DrawSprite(0, 0, &nes.ppu.GetScreen(), 2);
 
