@@ -259,8 +259,7 @@ public:
 			for (int s = 0; s < 4; s++) // Each Index
 			{
 				FillRect(516 + p * (SwatchSize * 5) + s * SwatchSize, 340,
-					SwatchSize, SwatchSize, nes.ppu.GetColourFromPaletteRam(p , s));
-
+					SwatchSize, SwatchSize, nes.ppu.GetColorFromPalleteRam(p, s));
 			}
 		}
 

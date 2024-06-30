@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <cstdint>
 #include <vector>
@@ -42,4 +42,6 @@ public:
     
     bool ppuRead(uint16_t addr, uint8_t &data);
     bool ppuWrite(uint16_t addr, uint8_t data);
+
+    void reset();
 };

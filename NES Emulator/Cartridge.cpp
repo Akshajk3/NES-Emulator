@@ -1,4 +1,4 @@
-#include "Cartridge.h"
+﻿#include "Cartridge.h"
 
 Cartridge::Cartridge(const std::string& fileName)
 {
@@ -130,4 +130,10 @@ bool Cartridge::ppuWrite(uint16_t addr, uint8_t data)
 	{
 		return false;
 	}
+}
+
+void Cartridge::reset()
+{
+	if (Mapper != nullptr)
+		Mapper->reset();
 }
