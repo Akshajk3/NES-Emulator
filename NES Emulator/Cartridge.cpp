@@ -92,7 +92,7 @@ bool Cartridge::cpuRead(uint16_t addr, uint8_t& data)
 
 bool Cartridge::cpuWrite(uint16_t addr, uint8_t data)
 {
-	uint32_t mapped_addr;
+	uint32_t mapped_addr = 0;
 	if (Mapper->cpuMapWrite(addr, mapped_addr))
 	{
 		PRGMemory[mapped_addr] = data;
@@ -106,8 +106,8 @@ bool Cartridge::cpuWrite(uint16_t addr, uint8_t data)
 
 bool Cartridge::ppuRead(uint16_t addr, uint8_t& data)
 {
-	uint32_t mapped_addr;
-	if (Mapper->cpuMapWrite(addr, mapped_addr))
+	uint32_t mapped_addr = 0;
+	if (Mapper->ppuMapRead(addr, mapped_addr))
 	{
 		data = CHRMemory[mapped_addr];
 		return true;
@@ -120,8 +120,8 @@ bool Cartridge::ppuRead(uint16_t addr, uint8_t& data)
 
 bool Cartridge::ppuWrite(uint16_t addr, uint8_t data)
 {
-	uint32_t mapped_addr;
-	if (Mapper->cpuMapWrite(addr, mapped_addr))
+	uint32_t mapped_addr = 0;
+	if (Mapper->ppuMapRead(addr, mapped_addr))
 	{
 		CHRMemory[mapped_addr] = data;
 		return true;
@@ -130,10 +130,4 @@ bool Cartridge::ppuWrite(uint16_t addr, uint8_t data)
 	{
 		return false;
 	}
-}
-
-void Cartridge::reset()
-{
-	if (Mapper != nullptr)
-		Mapper->reset();
 }

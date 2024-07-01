@@ -173,7 +173,7 @@ public:
 
 	bool OnUserCreate()
 	{
-		cart = std::make_shared<Cartridge>("nestest.nes");
+		cart = std::make_shared<Cartridge>("smb.nes");
 
 		nes.insertCartridge(cart);
 
