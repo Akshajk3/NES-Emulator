@@ -192,7 +192,7 @@ void olc2C02::cpuWrite(uint16_t addr, uint8_t data)
 		break;
 	case 0x0007: // PPU Data
 		ppuWrite(ppu_address, data);
-		ppu_address++;
+		ppu_address += (control.increment_mode ? 32 : 1);
 		break;
 	}
 }
@@ -212,7 +212,28 @@ uint8_t olc2C02::ppuRead(uint16_t addr, bool readonly)
 	}
 	else if (addr >= 0x2000 && addr <= 0x3EFF)
 	{
-
+		if (cart->mirror == Cartridge::MIRROR::VERTICAL)
+		{
+			if (addr >= 0x0000 && addr <= 0x03FF)
+				data = tblName[0][addr & 0x03FF];
+			if (addr >= 0x0400 && addr <= 0x7FF)
+				data = tblName[1][addr & 0x03FF];
+			if (addr >= 0x0800 && addr <= 0x0BFF)
+				data = tblName[0][addr & 0x03FF];
+			if (addr >= 0x0C00 && addr <= 0x0FFF)
+				data = tblName[1][addr & 0x03FF];
+		}
+		else if (cart->mirror == Cartridge::MIRROR::HORIZONTAL)
+		{
+			if (addr >= 0x0000 && addr <= 0x03FF)
+				data = tblName[0][addr & 0x03FF];
+			if (addr >= 0x04FF && addr <= 0x07FF)
+				data = tblName[0][addr & 0x03FF];
+			if (addr >= 0x0800 && addr <= 0x0BFF)
+				data = tblName[1][addr & 0x03FF];
+			if (addr >= 0x0C00 && addr <= 0x0FFF)
+				data = tblName[1][addr & 0x03FF];
+		}
 	}
 	else if (addr >= 0x3F00 && addr <= 0x3FFF)
 	{
@@ -244,7 +265,30 @@ void olc2C02::ppuWrite(uint16_t addr, uint8_t data)
 	}
 	else if (addr >= 0x2000 && addr <= 0x3EFF)
 	{
+		addr &= 0x0FFF;
 
+		if (cart->mirror == Cartridge::MIRROR::VERTICAL)
+		{
+			if (addr >= 0x0000 && addr <= 0x03FF)
+				tblName[0][addr & 0x03FF] = data;
+			if (addr >= 0x0400 && addr <= 0x7FF)
+				tblName[1][addr & 0x03FF] = data;
+			if (addr >= 0x0800 && addr <= 0x0BFF)
+				tblName[0][addr & 0x03FF] = data;
+			if (addr >= 0x0C00 && addr <= 0x0FFF)
+				tblName[1][addr & 0x03FF] = data;
+		}
+		else if (cart->mirror == Cartridge::MIRROR::HORIZONTAL)
+		{
+			if (addr >= 0x0000 && addr <= 0x03FF)
+				tblName[0][addr & 0x03FF] = data;
+			if (addr >= 0x0400 && addr <= 0x07FF)
+				tblName[0][addr & 0x03FF] = data;
+			if (addr >= 0x0800 && addr <= 0x0BFF)
+				tblName[1][addr & 0x03FF] = data;
+			if (addr >= 0x0C00 && addr <= 0x0FFF)
+				tblName[1][addr & 0x03FF] = data;
+		}
 	}
 	else if (addr >= 0x3F00 && addr <= 0x3FFF)
 	{
@@ -281,7 +325,7 @@ void olc2C02::clock()
 	}
 
 	// Fake noise
-	Screen.SetPixel(cycle - 1, scanLine, palScreen[(rand() % 2) ? 0x3F : 0x30]);
+	//Screen.SetPixel(cycle - 1, scanLine, palScreen[(rand() % 2) ? 0x3F : 0x30]);
 
 	// Advance Render - it never stops
 	cycle++;

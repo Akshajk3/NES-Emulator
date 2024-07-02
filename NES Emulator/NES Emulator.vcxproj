@@ -204,6 +204,7 @@
     <ClInclude Include="olcPixelGameEngine.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="donkeykong.nes" />
     <None Include="nestest.nes" />
     <None Include="smb.nes" />
   </ItemGroup>

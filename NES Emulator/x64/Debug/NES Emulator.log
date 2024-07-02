@@ -1,6 +1,2 @@
-﻿  Bus.cpp
-  Main.cpp
-  olc2C02.cpp
-  olc6502.cpp
-  Generating Code...
+﻿  Main.cpp
   NES Emulator.vcxproj -> C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\x64\Debug\NES Emulator.exe
