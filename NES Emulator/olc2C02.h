@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include <cstdint>
 #include <memory>
@@ -111,6 +111,20 @@ private:
             uint16_t coarse_x : 5;
             uint16_t coarse_y : 5;
             uint16_t nametable_x : 1;
+            uint16_t nametable_y : 1;
+            uint16_t fine_y : 1;
+            uint16_t unused : 1;
         };
+        uint16_t reg = 0x0000;
     };
+    
+    loopy_register vram_addr;
+    loopy_register tram_addr;
+    
+    uint8_t fine_x = 0x00;
+    
+    uint8_t bg_next_tile_id = 0x00;
+    uint8_t bg_next_tile_attrib = 0x00;
+    uint8_t bg_next_tile_lsb = 0x00;
+    uint8_t bg_next_tile_msb = 0x00;
 };
