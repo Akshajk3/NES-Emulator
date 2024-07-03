@@ -1,4 +1,4 @@
-#include "olc2C02.h"
+﻿#include "olc2C02.h"
 
 olc2C02::olc2C02()
 {
@@ -380,50 +380,97 @@ void olc2C02::clock()
             vram_addr.coarse_x = tram_addr.coarse_x;
         }
     };
+
+	auto TransferAddressY = [&]()
+	{
+		if (mask.render_background || mask.render_sprite)
+		{
+			vram_addr.fine_y = tram_addr.fine_y;
+			vram_addr.nametable_y = tram_addr.nametable_y;
+			vram_addr.coarse_y = tram_addr.coarse_y;
+		}
+	};
+
+	auto LoadBackgroundShifters = [&]()
+	{
+		bg_shifter_pattern_lo = (bg_shifter_pattern_lo & 0xFF00) | bg_next_tile_lsb;
+		bg_shifter_pattern_hi = (bg_shifter_pattern_hi & 0xFF00) | bg_next_tile_msb;
+		bg_shifter_attrib_lo = (bg_shifter_attrib_lo & 0xFF00) | ((bg_next_tile_attrib & 0b01) ? 0xFF : 0x00);
+		bg_shifter_attrib_hi = (bg_shifter_attrib_hi & 0xFF00) | ((bg_next_tile_attrib & 0b10) ? 0xFF : 0x00);
+	};
+
+	auto UpdateShifters = [&]()
+	{
+		if (mask.render_background)
+		{
+			bg_shifter_pattern_lo <<= 1;
+			bg_shifter_pattern_hi <<= 1;
+			bg_shifter_attrib_lo <<= 1;
+			bg_shifter_attrib_hi <<= 1;
+		}
+	};
     
-    if (scanLine >= -1 && scanLine < 240)
-    {
-        if (scanLine == -1 && cycle == 1)
-        {
-            status.vertical_blank = 0;
-        }
-        
-        if ((cycle >= 2 && cycle < 258) || (cycle >= 321 && cycle < 338))
-        {
-            switch ((cycle - 1) % 8)
-            {
-            case 0:
-                bg_next_tile_id = ppuRead(0x2000 | (vram_addr.nametable_y << 11));
-                break;
-            case 2:
-                bg_next_tile_attrib = ppuRead(0x23C0 | (vram_addr.nametable_y << 11)
-                    | (vram_addr.nametable_x << 10)
-                    | ((vram_addr.coarse_y >> 2 ) << 3)
-                    | (vram_addr.coarse_x >> 2));
-                if (vram_addr.coarse_y & 0x02)
-                    bg_next_tile_attrib >>= 4;
-                if (vram_addr.coarse_x & 0x02)
-                    bg_next_tile_attrib >>= 2;
-                break;
-            case 4:
-                bg_next_tile_lsb = ppuRead((control.pattern_background << 12)
-                    + ((uint16_t)bg_next_tile_id << 4)
-                    + (vram_addr.fine_y) + 0);
-                    break;
-            case 6:
-                bg_next_tile_msb = ppuRead((control.pattern_background << 12)
-                    + ((uint16_t)bg_next_tile_id << 4)
-                    + (vram_addr.fine_y) + 8);
-                    break;
-            case 7:
-            }
-        }
-        if (cycle == 256)
-        {
-            
-        }
+	if (scanLine >= -1 && scanLine < 240)
+	{
+		if (scanLine == -1 && cycle == 1)
+		{
+			status.vertical_blank = 0;
+		}
+
+		if ((cycle >= 2 && cycle < 258) || (cycle >= 321 && cycle < 338))
+		{
+			UpdateShifters();
+
+			switch ((cycle - 1) % 8)
+			{
+			case 0:
+				LoadBackgroundShifters();
+				bg_next_tile_id = ppuRead(0x2000 | (vram_addr.nametable_y << 11));
+				break;
+			case 2:
+				bg_next_tile_attrib = ppuRead(0x23C0 | (vram_addr.nametable_y << 11)
+					| (vram_addr.nametable_x << 10)
+					| ((vram_addr.coarse_y >> 2) << 3)
+					| (vram_addr.coarse_x >> 2));
+				if (vram_addr.coarse_y & 0x02)
+					bg_next_tile_attrib >>= 4;
+				if (vram_addr.coarse_x & 0x02)
+					bg_next_tile_attrib >>= 2;
+				break;
+			case 4:
+				bg_next_tile_lsb = ppuRead((control.pattern_background << 12)
+					+ ((uint16_t)bg_next_tile_id << 4)
+					+ (vram_addr.fine_y) + 0);
+				break;
+			case 6:
+				bg_next_tile_msb = ppuRead((control.pattern_background << 12)
+					+ ((uint16_t)bg_next_tile_id << 4)
+					+ (vram_addr.fine_y) + 8);
+				break;
+			case 7:
+				IncrementScrollX();
+			}
+		}
+		if (cycle == 256)
+		{
+			IncrementScrollY();
+		}
+
+		if (cycle == 257)
+		{
+			TransferAddressX();
+		}
+
+		if (scanLine == -1 && cycle >= 280 && cycle < 305)
+		{
+			TransferAddressY();
+		}
     }
     
+	if (scanLine == 240)
+	{
+		// Do Nothing
+	}
 
 	if (scanLine == 241 && cycle == 1)
 	{
@@ -432,8 +479,24 @@ void olc2C02::clock()
 			nmi = true;
 	}
 
-	// Fake noise
-	//Screen.SetPixel(cycle - 1, scanLine, palScreen[(rand() % 2) ? 0x3F : 0x30]);
+	uint8_t bg_pixel = 0x00;
+	uint8_t bg_pallete = 0x00;
+
+	if (mask.render_background)
+	{
+		uint16_t bit_mux = 0x8000 >> fine_x;
+
+		uint8_t p0_pixel = (bg_shifter_pattern_lo & bit_mux) > 0;
+		uint8_t p1_pixel = (bg_shifter_pattern_hi & bit_mux) > 0;
+		bg_pixel = (p1_pixel << 1) | p0_pixel;
+
+		uint8_t bg_pal0 = (bg_shifter_attrib_lo & bit_mux) > 0;
+		uint8_t bg_pal1 = (bg_shifter_attrib_hi & bit_mux) > 0;
+		bg_pallete = (bg_pal1 << 1) | bg_pal0;
+	}
+
+	// Draw Background
+	Screen.SetPixel(cycle - 1, scanLine, GetColorFromPalleteRam(bg_pallete, bg_pixel));
 
 	// Advance Render - it never stops
 	cycle++;

@@ -202,7 +202,7 @@ public:
 		{
 			for (uint8_t x = 0; x < 32; x++)
 			{
-				//DrawString(x * 16, y * 16, hex((uint32_t)nes.ppu.tblName[0][y * 32 + x], 2));
+				DrawString(x * 16, y * 16, hex((uint32_t)nes.ppu.tblName[0][y * 32 + x], 2));
 				uint8_t id = (uint32_t)nes.ppu.tblName[0][y * 32 + x];
 				DrawPartialSprite(x * 16, y * 16, &s,
 					(id & 0x0F) << 3, ((id >> 4) & 0x0F) << 3, 8, 8, 2);
