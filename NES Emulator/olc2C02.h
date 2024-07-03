@@ -112,7 +112,7 @@ private:
             uint16_t coarse_y : 5;
             uint16_t nametable_x : 1;
             uint16_t nametable_y : 1;
-            uint16_t fine_y : 1;
+            uint16_t fine_y : 3;
             uint16_t unused : 1;
         };
         uint16_t reg = 0x0000;

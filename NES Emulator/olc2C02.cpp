@@ -227,6 +227,8 @@ uint8_t olc2C02::ppuRead(uint16_t addr, bool readonly)
 	}
 	else if (addr >= 0x2000 && addr <= 0x3EFF)
 	{
+		addr &= 0x0FFF;
+
 		if (cart->mirror == Cartridge::MIRROR::VERTICAL)
 		{
 			if (addr >= 0x0000 && addr <= 0x03FF)
@@ -425,7 +427,7 @@ void olc2C02::clock()
 			{
 			case 0:
 				LoadBackgroundShifters();
-				bg_next_tile_id = ppuRead(0x2000 | (vram_addr.nametable_y << 11));
+				bg_next_tile_id = ppuRead(0x2000 | (vram_addr.reg & 0x0FFF));
 				break;
 			case 2:
 				bg_next_tile_attrib = ppuRead(0x23C0 | (vram_addr.nametable_y << 11)
