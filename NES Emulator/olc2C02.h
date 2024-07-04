@@ -132,4 +132,27 @@ private:
     uint16_t bg_shifter_pattern_hi = 0x0000;
     uint16_t bg_shifter_attrib_lo = 0x0000;
     uint16_t bg_shifter_attrib_hi = 0x0000;
+
+private:
+    struct ObjectAttributeEntry
+    {
+        uint8_t y; // Y Position of Sprite
+        uint8_t id; // ID of tile from pattern memory
+        uint8_t attribute; // Flags that define how sprite is rendered
+        uint8_t x; // X position of Sprite
+    } OAM[64];
+
+    uint8_t oam_addr = 0x00;
+
+    ObjectAttributeEntry spriteScanLine[8];
+    uint8_t spriteCount;
+    uint8_t sprite_shifter_pattern_lo[8];
+    uint8_t sprite_shifter_pattern_hi[8];
+
+    bool SpriteZeroHitPossible = false;
+    bool SpriteZeroBeingRendered = false;
+
+public:
+    uint8_t* pOAM = (uint8_t*)OAM;
+
 };
