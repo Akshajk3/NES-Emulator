@@ -3,6 +3,9 @@
   "WorkspaceRootPath": "C:\\Users\\Kanumuri\\Documents\\GitHub\\NES-Emulator\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{5466D4F8-43A5-4B9C-97DF-6F42E62EF30A}|NES Emulator\\NES Emulator.vcxproj|C:\\Users\\Kanumuri\\Downloads\\nesIcon.ico||{177559E0-D141-11D0-92DF-00A0C9138C45}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{5466D4F8-43A5-4B9C-97DF-6F42E62EF30A}|NES Emulator\\NES Emulator.vcxproj|C:\\Users\\Kanumuri\\Documents\\GitHub\\NES-Emulator\\NES Emulator\\Main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{5466D4F8-43A5-4B9C-97DF-6F42E62EF30A}|NES Emulator\\NES Emulator.vcxproj|solutionrelative:NES Emulator\\Main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
@@ -50,17 +53,17 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "Main.cpp",
               "DocumentMoniker": "C:\\Users\\Kanumuri\\Documents\\GitHub\\NES-Emulator\\NES Emulator\\Main.cpp",
               "RelativeDocumentMoniker": "NES Emulator\\Main.cpp",
               "ToolTip": "C:\\Users\\Kanumuri\\Documents\\GitHub\\NES-Emulator\\NES Emulator\\Main.cpp",
               "RelativeToolTip": "NES Emulator\\Main.cpp",
-              "ViewState": "AQIAAH8AAAAAAAAAAAAMwIgAAAA/AAAA",
+              "ViewState": "AQIAAHwAAAAAAAAAAAAMwI4AAAAdAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2024-05-26T20:50:16.389Z",
               "IsPinned": true,
@@ -68,7 +71,19 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
+              "Title": "nesIcon.ico - Icon [32x14, 32 bit, BMP]",
+              "DocumentMoniker": "C:\\Users\\Kanumuri\\Downloads\\nesIcon.ico",
+              "RelativeDocumentMoniker": "..\\..\\..\\Downloads\\nesIcon.ico",
+              "ToolTip": "C:\\Users\\Kanumuri\\Downloads\\nesIcon.ico - Icon [32x14, 32 bit, BMP]",
+              "RelativeToolTip": "..\\..\\..\\Downloads\\nesIcon.ico - Icon [32x14, 32 bit, BMP]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001525|",
+              "WhenOpened": "2024-07-05T08:25:23.113Z",
+              "EditorCaption": " - Icon [32x14, 32 bit, BMP]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "Mapper.cpp",
               "DocumentMoniker": "C:\\Users\\Kanumuri\\Documents\\GitHub\\NES-Emulator\\NES Emulator\\Mapper.cpp",
               "RelativeDocumentMoniker": "NES Emulator\\Mapper.cpp",
@@ -81,7 +96,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "olc2C02.cpp",
               "DocumentMoniker": "C:\\Users\\Kanumuri\\Documents\\GitHub\\NES-Emulator\\NES Emulator\\olc2C02.cpp",
               "RelativeDocumentMoniker": "NES Emulator\\olc2C02.cpp",
@@ -94,7 +109,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "olc2C02.h",
               "DocumentMoniker": "C:\\Users\\Kanumuri\\Documents\\GitHub\\NES-Emulator\\NES Emulator\\olc2C02.h",
               "RelativeDocumentMoniker": "NES Emulator\\olc2C02.h",
@@ -107,7 +122,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "olc2A03.h",
               "DocumentMoniker": "C:\\Users\\Kanumuri\\Documents\\GitHub\\NES-Emulator\\NES Emulator\\olc2A03.h",
               "RelativeDocumentMoniker": "NES Emulator\\olc2A03.h",
@@ -120,7 +135,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "Bus.cpp",
               "DocumentMoniker": "C:\\Users\\Kanumuri\\Documents\\GitHub\\NES-Emulator\\NES Emulator\\Bus.cpp",
               "RelativeDocumentMoniker": "NES Emulator\\Bus.cpp",
@@ -133,7 +148,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "olc2A03.cpp",
               "DocumentMoniker": "C:\\Users\\Kanumuri\\Documents\\GitHub\\NES-Emulator\\NES Emulator\\olc2A03.cpp",
               "RelativeDocumentMoniker": "NES Emulator\\olc2A03.cpp",
@@ -146,7 +161,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "Bus.h",
               "DocumentMoniker": "C:\\Users\\Kanumuri\\Documents\\GitHub\\NES-Emulator\\NES Emulator\\Bus.h",
               "RelativeDocumentMoniker": "NES Emulator\\Bus.h",
@@ -159,7 +174,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 9,
               "Title": "olc6502.cpp",
               "DocumentMoniker": "C:\\Users\\Kanumuri\\Documents\\GitHub\\NES-Emulator\\NES Emulator\\olc6502.cpp",
               "RelativeDocumentMoniker": "NES Emulator\\olc6502.cpp",
@@ -171,7 +186,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 10,
               "Title": "olc6502.h",
               "DocumentMoniker": "C:\\Users\\Kanumuri\\Documents\\GitHub\\NES-Emulator\\NES Emulator\\olc6502.h",
               "RelativeDocumentMoniker": "NES Emulator\\olc6502.h",
