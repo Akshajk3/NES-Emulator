@@ -1,0 +1,19 @@
+﻿  Bus.cpp
+C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\NES Emulator\olc2C02.h(41,37): error C2280: 'olc::Sprite::Sprite(const olc::Sprite &)': attempting to reference a deleted function
+  Cartridge.cpp
+  Main.cpp
+C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\NES Emulator\olc2C02.h(41,37): error C2280: 'olc::Sprite::Sprite(const olc::Sprite &)': attempting to reference a deleted function
+C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\NES Emulator\olcPixelGameEngine.h(2833,26): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\NES Emulator\olcPixelGameEngine.h(2845,26): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\NES Emulator\olcPixelGameEngine.h(2857,26): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\NES Emulator\olcPixelGameEngine.h(3687,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\NES Emulator\olcPixelGameEngine.h(3775,58): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\NES Emulator\Main.cpp(120,12): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\NES Emulator\Main.cpp(125,27): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+  Mapper.cpp
+  Mapper_000.cpp
+  olc2A03.cpp
+  olc2C02.cpp
+C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\NES Emulator\olc2C02.h(41,37): error C2280: 'olc::Sprite::Sprite(const olc::Sprite &)': attempting to reference a deleted function
+  olc6502.cpp
+C:\Users\Kanumuri\Documents\GitHub\NES-Emulator\NES Emulator\olc2C02.h(41,37): error C2280: 'olc::Sprite::Sprite(const olc::Sprite &)': attempting to reference a deleted function

@@ -1,8 +1,8 @@
 ﻿#include <iostream>
 #include <sstream>
+#include <deque>
 
 #include "Bus.h"
-#include "olc6502.h"
 
 #define OLC_PGE_APPLICATION
 #include "olcPixelGameEngine.h"
@@ -10,19 +10,27 @@
 #define OLC_PGEX_SOUND
 #include "olcPGEX_Sound.h"
 
-class Demo_olc6502 : public olc::PixelGameEngine
+
+class Demo_olcNES : public olc::PixelGameEngine
 {
 public:
-	Demo_olc6502() { sAppName = "olc6502 Demonstration"; }
+	Demo_olcNES() { sAppName = "olcNES Sound Demonstration"; }
 
-	std::shared_ptr<Cartridge> cart;
+private:
+	// The NES
 	Bus nes;
+	std::shared_ptr<Cartridge> cart;
+	bool bEmulationRun = false;
+	float fResidualTime = 0.0f;
+
+	uint8_t nSelectedPalette = 0x00;
+
+	std::list<uint16_t> audio[4];
+	float fAccumulatedTime = 0.0f;
+
+private:
+	// Support Utilities
 	std::map<uint16_t, std::string> mapAsm;
-
-	bool EmulationRun = false;
-	float ResidualTime = 0.0f;
-
-	uint8_t SelectedPallete = 0x00;
 
 	std::string hex(uint32_t n, uint8_t d)
 	{
@@ -99,143 +107,261 @@ public:
 		}
 	}
 
-	bool OnUserCreate()
+	void DrawAudio(int channel, int x, int y)
 	{
-		cart = std::make_shared<Cartridge>("smb.nes");
+		FillRect(x, y, 120, 120, olc::BLACK);
+		int i = 0;
+		for (auto s : audio[channel])
+		{
+			Draw(x + i, y + (s >> (channel == 2 ? 5 : 4)), olc::YELLOW);
+			i++;
+		}
+	}
 
+	// This function is called by the underlying sound hardware
+	// which runs in a different thread. It is automatically
+	// synchronised with the sample rate of the sound card, and
+	// expects a single "sample" to be returned, whcih ultimately
+	// makes its way to your speakers, and then your ears, for that
+	// lovely 8-bit bliss... but, that means we've some thread
+	// handling to deal with, since we want both the PGE thread
+	// and the sound system thread to interact with the emulator.
+
+	static Demo_olcNES* pInstance; // Static variable that will hold a pointer to "this"
+
+	static float SoundOut(int nChannel, float fGlobalTime, float fTimeStep)
+	{
+		if (nChannel == 0)
+		{
+			while (!pInstance->nes.clock()) {};
+			return static_cast<float>(pInstance->nes.dAudioSample);
+		}
+		else
+			return 0.0f;
+	}
+
+	bool OnUserCreate() override
+	{
+		std::string cart_name;
+		std::cout << "Enter Cartridge Name: ";
+		std::cin >> cart_name;
+
+		// Load the cartridge
+		cart = std::make_shared<Cartridge>(cart_name);
+
+		if (!cart->ImageValid())
+			return false;
+
+		// Insert into NES
 		nes.insertCartridge(cart);
 
-		mapAsm = nes.cpu.disassemble(0x0000, 0xFFFF);
+		// Extract dissassembly
+		//mapAsm = nes.cpu.disassemble(0x0000, 0xFFFF);
 
+
+
+		for (int i = 0; i < 4; i++)
+		{
+			for (int j = 0; j < 120; j++)
+				audio[i].push_back(0);
+		}
+
+		// Reset NES
 		nes.reset();
 
+		// Initialise PGEX sound system, and give it a function to 
+		// call which returns a sound sample on demand
+		pInstance = this;
+		nes.SetSampleFrequency(44100);
+		olc::SOUND::InitialiseAudio(44100, 1, 8, 512);
+		olc::SOUND::SetUserSynthFunction(SoundOut);
 		return true;
 	}
 
-	bool OnUserUpdate(float fElapsedTime)
+	// We must play nicely now with the sound hardware, so unload
+	// it when the application terminates
+	bool OnUserDestroy() override
 	{
+		olc::SOUND::DestroyAudio();
+		return true;
+	}
+
+	bool OnUserUpdate(float fElapsedTime) override
+	{
+		EmulatorUpdateWithAudio(fElapsedTime);
+		return true;
+	}
+
+	// This performs an emulation update but synced to audio, so it cant
+	// perform stepping through code or frames. Essentially, it runs
+	// the emulation in real time now, so only accepts "controller" input
+	// and updates the display
+	bool EmulatorUpdateWithAudio(float fElapsedTime)
+	{
+		// Sample audio channel output roughly once per frame
+		fAccumulatedTime += fElapsedTime;
+		if (fAccumulatedTime >= 1.0f / 60.0f)
+		{
+			fAccumulatedTime -= (1.0f / 60.0f);
+			audio[0].pop_front();
+			audio[0].push_back(nes.apu.pulse1_visual);
+			audio[1].pop_front();
+			audio[1].push_back(nes.apu.pulse2_visual);
+			audio[2].pop_front();
+			audio[2].push_back(nes.apu.noise_visual);
+		}
+
+
 		Clear(olc::DARK_BLUE);
 
+		// Handle input for controller in port #1
 		nes.controller[0] = 0x00;
-		nes.controller[0] |= GetKey(olc::Key::X).bHeld ? 0x80 : 0x00;
-		nes.controller[0] |= GetKey(olc::Key::Z).bHeld ? 0x40 : 0x00;
-		nes.controller[0] |= GetKey(olc::Key::A).bHeld ? 0x20 : 0x00;
-		nes.controller[0] |= GetKey(olc::Key::S).bHeld ? 0x10 : 0x00;
+		nes.controller[0] |= GetKey(olc::Key::X).bHeld ? 0x80 : 0x00;     // A Button
+		nes.controller[0] |= GetKey(olc::Key::Z).bHeld ? 0x40 : 0x00;     // B Button
+		nes.controller[0] |= GetKey(olc::Key::A).bHeld ? 0x20 : 0x00;     // Select
+		nes.controller[0] |= GetKey(olc::Key::S).bHeld ? 0x10 : 0x00;     // Start
 		nes.controller[0] |= GetKey(olc::Key::UP).bHeld ? 0x08 : 0x00;
 		nes.controller[0] |= GetKey(olc::Key::DOWN).bHeld ? 0x04 : 0x00;
 		nes.controller[0] |= GetKey(olc::Key::LEFT).bHeld ? 0x02 : 0x00;
 		nes.controller[0] |= GetKey(olc::Key::RIGHT).bHeld ? 0x01 : 0x00;
 
-		if (EmulationRun)
-		{
-			if (ResidualTime > 0.0f)
-			{
-				ResidualTime -= fElapsedTime;
-			}
-			else
-			{
-				ResidualTime += (1.0f / 60.0f) - fElapsedTime;
-				do {
-					nes.clock();
-				} while (!nes.ppu.frame_complete);
-				nes.ppu.frame_complete = false;
-			}
-		}
-		else
-		{
-			// Step by step emulation
-			if (GetKey(olc::Key::C).bPressed)
-			{
-				// clock enough for one full cpu instruction
-				do {
-					nes.clock();
-				} while (!nes.cpu.complete());
-				// CPU clock runs slower than system clock
-				// it may be complete for additional system clock cycles
-				// Drain those out
-				do {
-					nes.clock();
-				} while (nes.cpu.complete());
-			}
-
-			if (GetKey(olc::Key::F).bPressed)
-			{
-				// Clock enough to draw current frame
-				do {
-					nes.clock();
-				} while (!nes.ppu.frame_complete);
-				// Use residual clock cycles to complete current instruction
-				do {
-					nes.clock();
-				} while (!nes.cpu.complete());
-				// Reset frame completion
-				nes.ppu.frame_complete = false;
-			}
-		}
-
-		if (GetKey(olc::Key::R).bPressed)
-		{
-			nes.reset();
-		}
-
-		if (GetKey(olc::Key::SPACE).bPressed)
-		{
-			EmulationRun = !EmulationRun;
-		}
-
-		if (GetKey(olc::Key::P).bPressed)
-		{
-			(++SelectedPallete) &= 0x07;
-		}
+		if (GetKey(olc::Key::R).bPressed) nes.reset();
+		if (GetKey(olc::Key::P).bPressed) (++nSelectedPalette) &= 0x07;
 
 		DrawCpu(516, 2);
 		//DrawCode(516, 72, 26);
 
-		for (int i = 0; i < 26; i++)
+		// Draw OAM Contents (first 26 out of 64) ======================================
+		/*for (int i = 0; i < 26; i++)
 		{
 			std::string s = hex(i, 2) + ": (" + std::to_string(nes.ppu.pOAM[i * 4 + 3])
 				+ ", " + std::to_string(nes.ppu.pOAM[i * 4 + 0]) + ") "
 				+ "ID: " + hex(nes.ppu.pOAM[i * 4 + 1], 2) +
 				+" AT: " + hex(nes.ppu.pOAM[i * 4 + 2], 2);
 			DrawString(516, 72 + i * 10, s);
-		}
+		}*/
 
-		const int SwatchSize = 6;
-		for (int p = 0; p < 8; p++) // Each Pallete
+		// Draw AUDIO Channels
+		DrawAudio(0, 520, 72);
+		DrawAudio(1, 644, 72);
+		DrawAudio(2, 520, 196);
+		DrawAudio(3, 644, 196);
+
+		// Draw Palettes & Pattern Tables ==============================================
+		const int nSwatchSize = 6;
+		for (int p = 0; p < 8; p++) // For each palette
+			for (int s = 0; s < 4; s++) // For each index
+				FillRect(516 + p * (nSwatchSize * 5) + s * nSwatchSize, 340,
+					nSwatchSize, nSwatchSize, nes.ppu.GetColourFromPaletteRam(p, s));
+
+		// Draw selection reticule around selected palette
+		DrawRect(516 + nSelectedPalette * (nSwatchSize * 5) - 1, 339, (nSwatchSize * 4), nSwatchSize, olc::WHITE);
+
+		// Generate Pattern Tables
+		DrawSprite(516, 348, &nes.ppu.GetPatternTable(0, nSelectedPalette));
+		DrawSprite(648, 348, &nes.ppu.GetPatternTable(1, nSelectedPalette));
+
+		// Draw rendered output ========================================================
+		DrawSprite(0, 0, &nes.ppu.GetScreen(), 2);
+		return true;
+	}
+
+	// This performs emulation with no audio synchronisation, so it is just
+	// as before, in all the previous videos
+	bool EmulatorUpdateWithoutAudio(float fElapsedTime)
+	{
+		Clear(olc::DARK_BLUE);
+
+		// Handle input for controller in port #1
+		nes.controller[0] = 0x00;
+		nes.controller[0] |= GetKey(olc::Key::X).bHeld ? 0x80 : 0x00;     // A Button
+		nes.controller[0] |= GetKey(olc::Key::Z).bHeld ? 0x40 : 0x00;     // B Button
+		nes.controller[0] |= GetKey(olc::Key::A).bHeld ? 0x20 : 0x00;     // Select
+		nes.controller[0] |= GetKey(olc::Key::S).bHeld ? 0x10 : 0x00;     // Start
+		nes.controller[0] |= GetKey(olc::Key::UP).bHeld ? 0x08 : 0x00;
+		nes.controller[0] |= GetKey(olc::Key::DOWN).bHeld ? 0x04 : 0x00;
+		nes.controller[0] |= GetKey(olc::Key::LEFT).bHeld ? 0x02 : 0x00;
+		nes.controller[0] |= GetKey(olc::Key::RIGHT).bHeld ? 0x01 : 0x00;
+
+		if (GetKey(olc::Key::SPACE).bPressed) bEmulationRun = !bEmulationRun;
+		if (GetKey(olc::Key::R).bPressed) nes.reset();
+		if (GetKey(olc::Key::P).bPressed) (++nSelectedPalette) &= 0x07;
+
+		if (bEmulationRun)
 		{
-			for (int s = 0; s < 4; s++) // Each Index
+			if (fResidualTime > 0.0f)
+				fResidualTime -= fElapsedTime;
+			else
 			{
-				FillRect(516 + p * (SwatchSize * 5) + s * SwatchSize, 340,
-					SwatchSize, SwatchSize, nes.ppu.GetColorFromPalleteRam(p, s));
+				fResidualTime += (1.0f / 60.0f) - fElapsedTime;
+				do { nes.clock(); } while (!nes.ppu.frame_complete);
+				nes.ppu.frame_complete = false;
+			}
+		}
+		else
+		{
+			// Emulate code step-by-step
+			if (GetKey(olc::Key::C).bPressed)
+			{
+				// Clock enough times to execute a whole CPU instruction
+				do { nes.clock(); } while (!nes.cpu.complete());
+				// CPU clock runs slower than system clock, so it may be
+				// complete for additional system clock cycles. Drain
+				// those out
+				do { nes.clock(); } while (nes.cpu.complete());
+			}
+
+			// Emulate one whole frame
+			if (GetKey(olc::Key::F).bPressed)
+			{
+				// Clock enough times to draw a single frame
+				do { nes.clock(); } while (!nes.ppu.frame_complete);
+				// Use residual clock cycles to complete current instruction
+				do { nes.clock(); } while (!nes.cpu.complete());
+				// Reset frame completion flag
+				nes.ppu.frame_complete = false;
 			}
 		}
 
-		DrawRect(516 + SelectedPallete * (SwatchSize * 5) - 1, 339, (SwatchSize * 4), SwatchSize, olc::WHITE);
+		DrawCpu(516, 2);
+		//DrawCode(516, 72, 26);
 
-		DrawSprite(516, 348, &nes.ppu.GetPatternTable(0, SelectedPallete));
-		DrawSprite(648, 348, &nes.ppu.GetPatternTable(1, SelectedPallete));
+		// Draw OAM Contents (first 26 out of 64) ======================================
+		/*for (int i = 0; i < 26; i++)
+		{
+			std::string s = hex(i, 2) + ": (" + std::to_string(nes.ppu.pOAM[i * 4 + 3])
+				+ ", " + std::to_string(nes.ppu.pOAM[i * 4 + 0]) + ") "
+				+ "ID: " + hex(nes.ppu.pOAM[i * 4 + 1], 2) +
+				+" AT: " + hex(nes.ppu.pOAM[i * 4 + 2], 2);
+			DrawString(516, 72 + i * 10, s);
+		}*/
 
+		// Draw Palettes & Pattern Tables ==============================================
+		const int nSwatchSize = 6;
+		for (int p = 0; p < 8; p++) // For each palette
+			for (int s = 0; s < 4; s++) // For each index
+				FillRect(516 + p * (nSwatchSize * 5) + s * nSwatchSize, 340,
+					nSwatchSize, nSwatchSize, nes.ppu.GetColourFromPaletteRam(p, s));
+
+		// Draw selection reticule around selected palette
+		DrawRect(516 + nSelectedPalette * (nSwatchSize * 5) - 1, 339, (nSwatchSize * 4), nSwatchSize, olc::WHITE);
+
+		// Generate Pattern Tables
+		DrawSprite(516, 348, &nes.ppu.GetPatternTable(0, nSelectedPalette));
+		DrawSprite(648, 348, &nes.ppu.GetPatternTable(1, nSelectedPalette));
+
+		// Draw rendered output ========================================================
 		DrawSprite(0, 0, &nes.ppu.GetScreen(), 2);
-
-		//olc::Sprite& s = nes.ppu.GetPatternTable(1, SelectedPallete);
-		//for (uint8_t y = 0; y < 30; y++)
-		//{
-		//	for (uint8_t x = 0; x < 32; x++)
-		//	{
-		//		DrawString(x * 16, y * 16, hex((uint32_t)nes.ppu.tblName[0][y * 32 + x], 2));
-		//		uint8_t id = (uint32_t)nes.ppu.tblName[0][y * 32 + x];
-		//		DrawPartialSprite(x * 16, y * 16, &s,
-		//			(id & 0x0F) << 3, ((id >> 4) & 0x0F) << 3, 8, 8, 2);
-		//	}
-		//}
-
 		return true;
 	}
-}; 
+};
+
+// Provide implementation for our static pointer
+Demo_olcNES* Demo_olcNES::pInstance = nullptr;
 
 int main()
 {
-	Demo_olc6502 demo;
+	Demo_olcNES demo;
 	demo.Construct(780, 480, 1, 1);
 	demo.Start();
 	return 0;
