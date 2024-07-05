@@ -14,7 +14,7 @@
 class Demo_olcNES : public olc::PixelGameEngine
 {
 public:
-	Demo_olcNES() { sAppName = "olcNES Sound Demonstration"; }
+	Demo_olcNES() { sAppName = "NES Emulator Vindel Edition"; }
 
 private:
 	// The NES
@@ -134,7 +134,7 @@ private:
 		if (nChannel == 0)
 		{
 			while (!pInstance->nes.clock()) {};
-			return static_cast<float>(pInstance->nes.dAudioSample);
+			return static_cast<float>(pInstance->nes.dAudioSample * 0.25f);
 		}
 		else
 			return 0.0f;
